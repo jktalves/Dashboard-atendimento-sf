@@ -1,0 +1,26 @@
+.panel {
+    display: flex;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.panel-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.divider {
+    width: 1px;
+    background: #dddbda;
+    flex-shrink: 0;
+}
+
+/* Remove a borda e sombra dos lightning-card filhos */
+.panel-col ::slotted(*),
+.panel-col c-logistica-destino,
+.panel-col c-logistica-transportadora {
+    display: block;
+    height: 100%;
+}
