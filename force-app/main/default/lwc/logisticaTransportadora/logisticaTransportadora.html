@@ -1,7 +1,15 @@
 <template>
     <lightning-card>
         <div slot="title" class="card-title">
-            <span class="emoji-title">🚚</span> Transportadora
+            <span class="emoji-title">🚚</span>
+            <div class="title-block">
+                <span class="title-main">Transportadora</span>
+                <span class="title-sub">Desempenho por transportadora</span>
+            </div>
+            <div class="period-toggle">
+                <button class={btnMesClass} onclick={selectMes}>Mês corrente</button>
+                <button class={btnAnoClass} onclick={selectAno}>Ano corrente</button>
+            </div>
         </div>
 
         <template lwc:if={isLoading}>
@@ -16,38 +24,53 @@
 
         <template lwc:elseif={hasData}>
             <div class="card-body">
-                <div class="stacked-bar">
-                    <template for:each={enrichedData} for:item="item">
-                        <div key={item.label} class="bar-segment" style={item.widthStyle} title={item.tooltipText}></div>
-                    </template>
+                <div class="bar-total-row">
+                    <div class="stacked-bar">
+                        <template for:each={enrichedData} for:item="item">
+                            <div key={item.label} class="bar-segment" style={item.widthStyle} title={item.tooltipText}></div>
+                        </template>
+                    </div>
+                    <div class="total-block">
+                        <span class="total-number">{totalChamados}</span>
+                        <span class="total-label">chamados</span>
+                    </div>
                 </div>
 
                 <div class="list-header">
-                    <span class="col-label">No mês corrente</span>
-                    <span class="col-etiquetas">Chamados</span>
+                    <span class="col-name-hdr">Transportadora</span>
+                    <span class="col-pct-hdr">% do total</span>
+                    <span class="col-count-hdr">Chamados</span>
                 </div>
 
-                <template for:each={enrichedData} for:item="item">
-                    <div key={item.label} class="list-row clickable" data-transp={item.label} onclick={handleTranspClick}>
-                        <div class="row-left">
-                            <span class="dot" style={item.dotStyle}></span>
-                            <span class="row-name">{item.label}</span>
+                <div class="list-scroll">
+                    <template for:each={enrichedData} for:item="item">
+                        <div key={item.label} class="list-row clickable" data-transp={item.label} onclick={handleTranspClick}>
+                            <div class="col-rank">
+                                <span class="rank-badge" style={item.rankStyle}>{item.rank}</span>
+                            </div>
+                            <div class="col-name">
+                                <span class="dot" style={item.dotStyle}></span>
+                                <span class="row-name">{item.label}</span>
+                            </div>
+                            <div class="col-pct">
+                                <span class="pct-text">{item.formattedPct}%</span>
+                                <div class="mini-bar-track">
+                                    <div class="mini-bar-fill" style={item.miniBarStyle}></div>
+                                </div>
+                            </div>
+                            <div class="col-count">
+                                <span class="count-badge" style={item.badgeStyle}>{item.count}</span>
+                            </div>
                         </div>
-                        <div class="row-right">
-                            <span class="row-pct">{item.formattedPct}%</span>
-                            <span class="badge">{item.count}</span>
-                        </div>
-                    </div>
-                </template>
+                    </template>
+                </div>
             </div>
         </template>
 
         <template lwc:else>
-            <div class="empty-container"><p>Nenhum dado nos últimos 30 dias.</p></div>
+            <div class="empty-container"><p>Nenhum dado no mês corrente.</p></div>
         </template>
-        <div slot="footer" class="refresh-footer">
-            ⏱️ Atualiza em {countdown}
-        </div>
+
     </lightning-card>
 
     <!-- Modal -->
@@ -71,7 +94,7 @@
                                     <th>Chamado</th>
                                     <th>Cidade</th>
                                     <th>Estado</th>
-                                    <th>Data Agendada</th>
+                                    <th>Data de Criação</th>
                                 </tr>
                             </thead>
                             <tbody>

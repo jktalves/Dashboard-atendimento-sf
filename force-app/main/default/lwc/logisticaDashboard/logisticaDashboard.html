@@ -1,11 +1,17 @@
 <template>
-    <div class="panel">
-        <div class="panel-col">
+    <div class="page-header">
+        <span class="page-header-label">Painel</span>
+        <h1 class="page-header-title">Chamados Fechados</h1>
+    </div>
+    <div class="dashboard-grid">
+        <div class="grid-col">
             <c-logistica-destino></c-logistica-destino>
         </div>
-        <div class="divider"></div>
-        <div class="panel-col">
+        <div class="grid-col">
             <c-logistica-transportadora></c-logistica-transportadora>
+        </div>
+        <div class="grid-col">
+            <c-porcentagem-de-atendimento></c-porcentagem-de-atendimento>
         </div>
     </div>
 </template>

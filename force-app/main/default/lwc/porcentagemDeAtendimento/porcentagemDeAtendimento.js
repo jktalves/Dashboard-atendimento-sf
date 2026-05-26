@@ -1,14 +1,14 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
-import getDestinoData from '@salesforce/apex/LogisticaDashboardController.getDestinoData';
-import getCasesByEstado from '@salesforce/apex/LogisticaDashboardController.getCasesByEstado';
+import getTypeData from '@salesforce/apex/LogisticaDashboardController.getTypeData';
+import getCasesByType from '@salesforce/apex/LogisticaDashboardController.getCasesByType';
 
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
-const COLORS = ['#04844B', '#1B2945', '#0176D3', '#747474', '#F4B95C', '#E45B25', '#8A2BE2', '#D81B60'];
+const COLORS = ['#0176D3', '#04844B', '#F4B95C', '#E45B25', '#8A2BE2'];
 
-export default class LogisticaDestino extends NavigationMixin(LightningElement) {
+export default class PorcentagemDeAtendimento extends NavigationMixin(LightningElement) {
     _data = [];
     _wiredResult;
     _refreshTimer;
@@ -21,7 +21,7 @@ export default class LogisticaDestino extends NavigationMixin(LightningElement) 
     @track modalCases = [];
     @track isLoadingCases = false;
 
-    @wire(getDestinoData, { period: '$_period' })
+    @wire(getTypeData, { period: '$_period' })
     wiredData(result) {
         this._wiredResult = result;
         this.isLoading = false;
@@ -45,12 +45,8 @@ export default class LogisticaDestino extends NavigationMixin(LightningElement) 
     selectMes() { this._period = 'MES'; this.isLoading = true; this._data = []; }
     selectAno() { this._period = 'ANO'; this.isLoading = true; this._data = []; }
 
-    get totalChamados() {
-        return this._data.reduce((sum, item) => sum + item.count, 0);
-    }
-
     get enrichedData() {
-        return this._data.slice(0, 10).map((item, idx) => {
+        return this._data.map((item, idx) => {
             const color = COLORS[idx % COLORS.length];
             return {
                 ...item,
@@ -64,21 +60,25 @@ export default class LogisticaDestino extends NavigationMixin(LightningElement) 
         });
     }
 
+    get totalChamados() {
+        return this._data.reduce((sum, item) => sum + item.count, 0);
+    }
+
     get hasData() { return this._data.length > 0; }
     get hasError() { return this.errorMessage !== ''; }
     get hasModalCases() { return this.modalCases.length > 0; }
 
-    handleStateClick(event) {
-        const uf    = event.currentTarget.dataset.uf;
+    handleTypeClick(event) {
+        const tipo  = event.currentTarget.dataset.tipo;
         const label = event.currentTarget.dataset.label;
-        this.modalTitle      = label;
-        this.modalOpen       = true;
-        this.isLoadingCases  = true;
-        this.modalCases      = [];
+        this.modalTitle     = label;
+        this.modalOpen      = true;
+        this.isLoadingCases = true;
+        this.modalCases     = [];
 
-        getCasesByEstado({ uf, period: this._period })
-            .then(data  => { this.modalCases = data; this.isLoadingCases = false; })
-            .catch(()   => { this.isLoadingCases = false; });
+        getCasesByType({ tipo, period: this._period })
+            .then(data => { this.modalCases = data; this.isLoadingCases = false; })
+            .catch(()  => { this.isLoadingCases = false; });
     }
 
     closeModal() { this.modalOpen = false; }

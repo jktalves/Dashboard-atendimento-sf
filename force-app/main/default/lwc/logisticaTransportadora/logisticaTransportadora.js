@@ -4,7 +4,7 @@ import { refreshApex } from '@salesforce/apex';
 import getTransportadoraData from '@salesforce/apex/LogisticaDashboardController.getTransportadoraData';
 import getCasesByTransportadora from '@salesforce/apex/LogisticaDashboardController.getCasesByTransportadora';
 
-const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutos
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
 const COLORS = ['#0176D3', '#04844B', '#F4B95C', '#E45B25', '#747474', '#8A2BE2', '#D81B60', '#1B2945'];
 
@@ -12,8 +12,7 @@ export default class LogisticaTransportadora extends NavigationMixin(LightningEl
     _data = [];
     _wiredResult;
     _refreshTimer;
-    _countdownTimer;
-    @track _seconds = REFRESH_INTERVAL_MS / 1000;
+    @track _period = 'MES';
     isLoading = true;
     errorMessage = '';
 
@@ -22,7 +21,7 @@ export default class LogisticaTransportadora extends NavigationMixin(LightningEl
     @track modalCases = [];
     @track isLoadingCases = false;
 
-    @wire(getTransportadoraData)
+    @wire(getTransportadoraData, { period: '$_period' })
     wiredData(result) {
         this._wiredResult = result;
         this.isLoading = false;
@@ -33,23 +32,21 @@ export default class LogisticaTransportadora extends NavigationMixin(LightningEl
     connectedCallback() {
         this._refreshTimer = setInterval(() => {
             refreshApex(this._wiredResult);
-            this._seconds = REFRESH_INTERVAL_MS / 1000;
         }, REFRESH_INTERVAL_MS);
-
-        this._countdownTimer = setInterval(() => {
-            this._seconds = this._seconds > 0 ? this._seconds - 1 : 0;
-        }, 1000);
     }
 
     disconnectedCallback() {
         clearInterval(this._refreshTimer);
-        clearInterval(this._countdownTimer);
     }
 
-    get countdown() {
-        const m = Math.floor(this._seconds / 60);
-        const s = this._seconds % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
+    get btnMesClass() { return 'period-btn' + (this._period === 'MES' ? ' active' : ''); }
+    get btnAnoClass() { return 'period-btn' + (this._period === 'ANO' ? ' active' : ''); }
+
+    selectMes() { this._period = 'MES'; this.isLoading = true; this._data = []; }
+    selectAno() { this._period = 'ANO'; this.isLoading = true; this._data = []; }
+
+    get totalChamados() {
+        return this._data.reduce((sum, item) => sum + item.count, 0);
     }
 
     get enrichedData() {
@@ -57,8 +54,12 @@ export default class LogisticaTransportadora extends NavigationMixin(LightningEl
             const color = COLORS[idx % COLORS.length];
             return {
                 ...item,
+                rank: idx + 1,
                 widthStyle: `width:${item.percentage}%; background-color:${color};`,
                 dotStyle: `background-color:${color};`,
+                miniBarStyle: `width:${item.percentage}%; background-color:${color};`,
+                badgeStyle: `background-color:${color}33; color:${color};`,
+                rankStyle: `background-color:${color}22; color:${color}; border:1px solid ${color}55;`,
                 tooltipText: `${item.label}: ${item.percentage}%`,
                 formattedPct: String(item.percentage)
             };
@@ -76,7 +77,7 @@ export default class LogisticaTransportadora extends NavigationMixin(LightningEl
         this.isLoadingCases = true;
         this.modalCases     = [];
 
-        getCasesByTransportadora({ transp })
+        getCasesByTransportadora({ transp, period: this._period })
             .then(data => { this.modalCases = data; this.isLoadingCases = false; })
             .catch(()  => { this.isLoadingCases = false; });
     }

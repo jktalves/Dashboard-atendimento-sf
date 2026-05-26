@@ -1,10 +1,10 @@
 <template>
     <lightning-card>
         <div slot="title" class="card-title">
-            <span class="emoji-title">🗺️</span>
+            <span class="emoji-title">📊</span>
             <div class="title-block">
-                <span class="title-main">Entregas por regiões</span>
-                <span class="title-sub">Distribuição das entregas realizadas</span>
+                <span class="title-main">Porcentagem de Atendimento</span>
+                <span class="title-sub">Análise por tipo de atendimento</span>
             </div>
             <div class="period-toggle">
                 <button class={btnMesClass} onclick={selectMes}>Mês corrente</button>
@@ -37,14 +37,14 @@
                 </div>
 
                 <div class="list-header">
-                    <span class="col-name-hdr">Destino</span>
+                    <span class="col-name-hdr">Tipo de Atendimento</span>
                     <span class="col-pct-hdr">% do total</span>
                     <span class="col-count-hdr">Chamados</span>
                 </div>
 
                 <div class="list-scroll">
                     <template for:each={enrichedData} for:item="item">
-                        <div key={item.label} class="list-row clickable" data-uf={item.uf} data-label={item.label} onclick={handleStateClick}>
+                        <div key={item.label} class="list-row clickable" data-tipo={item.label} data-label={item.label} onclick={handleTypeClick}>
                             <div class="col-name">
                                 <span class="dot" style={item.dotStyle}></span>
                                 <span class="row-name">{item.label}</span>
@@ -67,7 +67,6 @@
         <template lwc:else>
             <div class="empty-container"><p>Nenhum dado no mês corrente.</p></div>
         </template>
-
     </lightning-card>
 
     <!-- Modal -->
@@ -91,6 +90,7 @@
                                     <th>Chamado</th>
                                     <th>Cidade</th>
                                     <th>Transportadora</th>
+                                    <th>Estado</th>
                                     <th>Data de Criação</th>
                                 </tr>
                             </thead>
@@ -100,6 +100,7 @@
                                         <td><a data-id={c.id} onclick={navigateToCase} class="case-link">{c.caseNumber}</a></td>
                                         <td>{c.cidade}</td>
                                         <td>{c.transportadora}</td>
+                                        <td>{c.estado}</td>
                                         <td>{c.dataAgendada}</td>
                                     </tr>
                                 </template>
