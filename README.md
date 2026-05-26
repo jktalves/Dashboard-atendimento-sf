@@ -1,6 +1,6 @@
 # Dashboard Atendimento SF
 
-Dashboard operacional desenvolvido em Salesforce Lightning Web Components para acompanhamento em tempo real dos chamados fechados da equipe de logística.
+Dashboard operacional desenvolvido em Salesforce Lightning Web Components que centraliza em uma única tela os principais indicadores de chamados fechados, oferecendo aos gestores uma visão clara e em tempo real do desempenho da operação.
 
 ![Preview do Dashboard](Dashboard.jpg)
 
