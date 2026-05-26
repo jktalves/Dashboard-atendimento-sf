@@ -8,7 +8,7 @@ Dashboard operacional desenvolvido em Salesforce Lightning Web Components que ce
 
 ## Sobre o projeto
 
-A ideia surgiu da necessidade de ter uma visão consolidada dos chamados de logística sem precisar ficar abrindo relatório por relatório no Salesforce. O dashboard reúne três perspectivas diferentes em uma única tela: de onde vêm os chamados (por estado), quais transportadoras estão sendo mais acionadas e qual é o mix de tipos de atendimento.
+A ideia surgiu da necessidade de ter uma visão consolidada dos chamados de atendimento sem precisar ficar abrindo relatório por relatório no Salesforce. O dashboard reúne três perspectivas diferentes em uma única tela: de onde vêm os chamados (por estado), quais transportadoras estão sendo mais acionadas e qual é o mix de tipos de atendimento.
 
 Tudo isso com filtro de período (mês corrente ou ano corrente), atualização automática a cada 5 minutos e a possibilidade de clicar em qualquer item para ver os chamados relacionados.
 
