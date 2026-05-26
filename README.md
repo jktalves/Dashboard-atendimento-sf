@@ -2,6 +2,8 @@
 
 Dashboard operacional desenvolvido em Salesforce Lightning Web Components para acompanhamento em tempo real dos chamados fechados da equipe de logística.
 
+![Preview do Dashboard](Dashboard.jpg)
+
 ---
 
 ## Sobre o projeto
